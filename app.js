@@ -1,56 +1,59 @@
 const express = require("express");
 const app = express();
 
-// ❌ Hardcoded credentials (security issue)
+// ✅ Hide framework info (fixes hotspot)
+app.disable("x-powered-by");
+
+// ✅ Use environment variables (no hardcoded secrets)
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+
+// ✅ Clean login
 app.get("/login", (req, res) => {
-    const username = req.query.username;
-    const password = req.query.password;
+    const { username, password } = req.query;
 
-    if (username == "admin" && password == "1234") {
-        res.send("Welcome admin");
-    } else {
-        res.send("Access denied");
+    if (!username || !password) {
+        return res.status(400).send("Missing credentials");
     }
+
+    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+        return res.send("Welcome admin");
+    }
+
+    return res.send("Access denied");
 });
 
-// ❌ Dangerous eval (major security issue)
-app.get("/eval", (req, res) => {
-    const input = req.query.input;
-    const result = eval(input); // VERY unsafe
-    res.send(result);
+// ✅ Safe endpoint (no eval)
+app.get("/process", (req, res) => {
+    const { input } = req.query;
+
+    if (typeof input !== "string") {
+        return res.status(400).send("Invalid input");
+    }
+
+    return res.send(`Processed input: ${input.trim()}`);
 });
 
-// ❌ Bad practices
-function calculate(price, discount) {
-    var total = price - discount;
+// ✅ Clean function
+function calculate(price, discount = 0) {
+    if (typeof price !== "number" || typeof discount !== "number") {
+        throw new Error("Invalid arguments");
+    }
 
-    if (total == "0") {
-        console.log("zero");
+    const total = price - discount;
+
+    if (total === 0) {
+        console.log("Total is zero");
     }
 
     return total;
 }
 
-// ❌ Duplicate code
-function duplicate() {
-    let a = 10;
-    let b = 20;
+// ✅ No duplication
+function addNumbers(a, b) {
     return a + b;
 }
 
-function duplicate2() {
-    let a = 10;
-    let b = 20;
-    return a + b;
-}
-
-// ❌ Nested / unnecessary logic
-function processData(input) {
-    if (input != null) {
-        if (input.value != null) {
-            console.log(input.value);
-        }
-    }
-}
-
-app.listen(3000);
+app.listen(3000, () => {
+    console.log("Server running on port 3000");
+});
