@@ -1,34 +1,45 @@
-function calculateTotal(price, quantity, discount = 0) {
-    let total = price * quantity;
-
-    total -= discount;
-
-    if (total === 0) {
-        console.log("Total is zero");
+function loginUser(username, password) {
+    if (username == null || password == null) {
+        console.log("Missing credentials");
+        return false;
     }
 
-    return total;
-}
-
-function processUser(user) {
-    if (!user) {
-        console.log("No user provided");
-        return;
-    }
-
-    if (user.age > 18) {
-        console.log("Adult");
+    if (username == "admin" && password == "1234") {
+        console.log("Login success");
+        return true;
     } else {
-        console.log("Minor");
+        console.log("Login failed");
+        return false;
     }
 }
 
-function calculateSum(x, y) {
+function calculateDiscount(price, userType) {
+    let discount;
+
+    if (userType == "vip") {
+        discount = price * 0.2;
+    }
+
+    if (userType == "regular") {
+        discount = price * 0.1;
+    }
+
+    return price - discount;
+}
+
+function unusedHelper() {
+    var x = 10;
+    var y = 20;
     return x + y;
 }
 
-const result = calculateTotal(100, 2, 10);
+function processData(input) {
+    if (input != null) {
+        if (input.value != null) {
+            console.log(input.value);
+        }
+    }
+}
 
-processUser({ name: "Ali", age: 17 });
-
-console.log("Final result:", result);
+loginUser("admin", "1234");
+calculateDiscount(100, "vip");
