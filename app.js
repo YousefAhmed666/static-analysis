@@ -1,11 +1,9 @@
-function calculateTotal(price, quantity, discount) {
-    var total = price * quantity;
+function calculateTotal(price, quantity, discount = 0) {
+    let total = price * quantity;
 
-    if (discount != null) {
-        total = total - discount;
-    }
+    total -= discount;
 
-    if (total == "0") {
+    if (total === 0) {
         console.log("Total is zero");
     }
 
@@ -13,26 +11,24 @@ function calculateTotal(price, quantity, discount) {
 }
 
 function processUser(user) {
-    if (user) {
-        if (user.age > 18) {
-            console.log("Adult");
-        } else {
-            console.log("Minor");
-        }
+    if (!user) {
+        console.log("No user provided");
+        return;
     }
 
-    if (user == null) {
-        console.log("No user provided");
+    if (user.age > 18) {
+        console.log("Adult");
+    } else {
+        console.log("Minor");
     }
 }
 
-function unusedFunction() {
-    var x = 10;
-    var y = 20;
+function calculateSum(x, y) {
     return x + y;
 }
 
-var result = calculateTotal(100, 2, 10);
+const result = calculateTotal(100, 2, 10);
+
 processUser({ name: "Ali", age: 17 });
 
-console.log("Final result: " + result);
+console.log("Final result:", result);
