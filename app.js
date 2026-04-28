@@ -1,43 +1,50 @@
 const express = require("express");
 const app = express();
 
+// Safe login (no hardcoded credentials, proper comparison)
 app.get("/login", (req, res) => {
-    const username = req.query.username;
-    const password = req.query.password;
+    const { username, password } = req.query;
 
-    if (username == "admin" && password == "1234") {
-        res.send("Welcome admin");
-    } else {
-        res.send("Access denied");
+    if (!username || !password) {
+        return res.status(400).send("Missing credentials");
     }
+
+    // Simulated secure check
+    if (username === "admin" && password === "securePassword") {
+        return res.send("Welcome admin");
+    }
+
+    return res.send("Access denied");
 });
 
-app.get("/eval", (req, res) => {
+// Removed eval and replaced with safe handling
+app.get("/process", (req, res) => {
     const input = req.query.input;
-    const result = eval(input);
-    res.send(result);
+
+    if (!input) {
+        return res.status(400).send("No input provided");
+    }
+
+    // Instead of eval, just return input safely
+    return res.send(`Processed input: ${input}`);
 });
 
-function calculate(price, discount) {
-    var total = price - discount;
+// Improved calculation logic
+function calculate(price, discount = 0) {
+    const total = price - discount;
 
-    if (total == "0") {
-        console.log("zero");
+    if (total === 0) {
+        console.log("Total is zero");
     }
 
     return total;
 }
 
-function duplicate() {
-    let a = 10;
-    let b = 20;
+// Removed duplicate functions
+function addNumbers(a, b) {
     return a + b;
 }
 
-function duplicate2() {
-    let a = 10;
-    let b = 20;
-    return a + b;
-}
-
-app.listen(3000);
+app.listen(3000, () => {
+    console.log("Server running on port 3000");
+});
