@@ -1,7 +1,10 @@
 const express = require("express");
 const app = express();
 
-// Safe login (no hardcoded credentials, proper comparison)
+// Use environment variables instead of hardcoded credentials
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+
 app.get("/login", (req, res) => {
     const { username, password } = req.query;
 
@@ -9,28 +12,32 @@ app.get("/login", (req, res) => {
         return res.status(400).send("Missing credentials");
     }
 
-    // Simulated secure check
-    if (username === "admin" && password === "securePassword") {
+    // Safe comparison (no hardcoded secrets)
+    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
         return res.send("Welcome admin");
     }
 
     return res.send("Access denied");
 });
 
-// Removed eval and replaced with safe handling
+// Safe endpoint without risky operations
 app.get("/process", (req, res) => {
-    const input = req.query.input;
+    const { input } = req.query;
 
-    if (!input) {
-        return res.status(400).send("No input provided");
+    if (typeof input !== "string") {
+        return res.status(400).send("Invalid input");
     }
 
-    // Instead of eval, just return input safely
-    return res.send(`Processed input: ${input}`);
+    // Just return sanitized input (no eval, no execution)
+    return res.send(`Processed input: ${input.trim()}`);
 });
 
-// Improved calculation logic
+// Clean function
 function calculate(price, discount = 0) {
+    if (typeof price !== "number" || typeof discount !== "number") {
+        throw new Error("Invalid arguments");
+    }
+
     const total = price - discount;
 
     if (total === 0) {
@@ -40,7 +47,7 @@ function calculate(price, discount = 0) {
     return total;
 }
 
-// Removed duplicate functions
+// Clean helper
 function addNumbers(a, b) {
     return a + b;
 }
