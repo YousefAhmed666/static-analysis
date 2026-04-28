@@ -1,45 +1,43 @@
-function loginUser(username, password) {
-    if (username == null || password == null) {
-        console.log("Missing credentials");
-        return false;
-    }
+const express = require("express");
+const app = express();
+
+app.get("/login", (req, res) => {
+    const username = req.query.username;
+    const password = req.query.password;
 
     if (username == "admin" && password == "1234") {
-        console.log("Login success");
-        return true;
+        res.send("Welcome admin");
     } else {
-        console.log("Login failed");
-        return false;
+        res.send("Access denied");
     }
+});
+
+app.get("/eval", (req, res) => {
+    const input = req.query.input;
+    const result = eval(input);
+    res.send(result);
+});
+
+function calculate(price, discount) {
+    var total = price - discount;
+
+    if (total == "0") {
+        console.log("zero");
+    }
+
+    return total;
 }
 
-function calculateDiscount(price, userType) {
-    let discount;
-
-    if (userType == "vip") {
-        discount = price * 0.2;
-    }
-
-    if (userType == "regular") {
-        discount = price * 0.1;
-    }
-
-    return price - discount;
+function duplicate() {
+    let a = 10;
+    let b = 20;
+    return a + b;
 }
 
-function unusedHelper() {
-    var x = 10;
-    var y = 20;
-    return x + y;
+function duplicate2() {
+    let a = 10;
+    let b = 20;
+    return a + b;
 }
 
-function processData(input) {
-    if (input != null) {
-        if (input.value != null) {
-            console.log(input.value);
-        }
-    }
-}
-
-loginUser("admin", "1234");
-calculateDiscount(100, "vip");
+app.listen(3000);
