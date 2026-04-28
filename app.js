@@ -1,57 +1,56 @@
 const express = require("express");
 const app = express();
 
-// Use environment variables instead of hardcoded credentials
-const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
-
+// ❌ Hardcoded credentials (security issue)
 app.get("/login", (req, res) => {
-    const { username, password } = req.query;
+    const username = req.query.username;
+    const password = req.query.password;
 
-    if (!username || !password) {
-        return res.status(400).send("Missing credentials");
+    if (username == "admin" && password == "1234") {
+        res.send("Welcome admin");
+    } else {
+        res.send("Access denied");
     }
-
-    // Safe comparison (no hardcoded secrets)
-    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-        return res.send("Welcome admin");
-    }
-
-    return res.send("Access denied");
 });
 
-// Safe endpoint without risky operations
-app.get("/process", (req, res) => {
-    const { input } = req.query;
-
-    if (typeof input !== "string") {
-        return res.status(400).send("Invalid input");
-    }
-
-    // Just return sanitized input (no eval, no execution)
-    return res.send(`Processed input: ${input.trim()}`);
+// ❌ Dangerous eval (major security issue)
+app.get("/eval", (req, res) => {
+    const input = req.query.input;
+    const result = eval(input); // VERY unsafe
+    res.send(result);
 });
 
-// Clean function
-function calculate(price, discount = 0) {
-    if (typeof price !== "number" || typeof discount !== "number") {
-        throw new Error("Invalid arguments");
-    }
+// ❌ Bad practices
+function calculate(price, discount) {
+    var total = price - discount;
 
-    const total = price - discount;
-
-    if (total === 0) {
-        console.log("Total is zero");
+    if (total == "0") {
+        console.log("zero");
     }
 
     return total;
 }
 
-// Clean helper
-function addNumbers(a, b) {
+// ❌ Duplicate code
+function duplicate() {
+    let a = 10;
+    let b = 20;
     return a + b;
 }
 
-app.listen(3000, () => {
-    console.log("Server running on port 3000");
-});
+function duplicate2() {
+    let a = 10;
+    let b = 20;
+    return a + b;
+}
+
+// ❌ Nested / unnecessary logic
+function processData(input) {
+    if (input != null) {
+        if (input.value != null) {
+            console.log(input.value);
+        }
+    }
+}
+
+app.listen(3000);
